@@ -1,0 +1,30 @@
+# 빌드 결과 · 캐시 (GitHub 에 올리지 않는다)
+build/
+.gradle/
+.kotlin/
+tmp/
+local.properties
+*.iml
+.idea/
+
+# 이 PC 전용 도구 폴더 (Gradle 캐시 · 안드로이드 사용자 폴더 · 에뮬레이터 기기 · 음성 합성 캐시)
+tools/gradle-home/
+tools/home/
+tools/.android/
+tools/avd/
+tools/voice_cache/
+tools/voice_report.txt
+
+# 키·비밀번호
+*.jks
+*.keystore
+keystore.properties
+.env*
+
+# 개인 목소리 ID
+tools/voice_id.txt
+
+# 공개 저장소에 올리지 않는 것: 개발자 본인 목소리 음성 파일 · APK
+app/src/main/assets/voice/
+apk/
+*.apk

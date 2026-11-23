@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature android:name="android.hardware.type.automotive" android:required="false" />
+
+    <!-- Pleos 차량 권한 (normal 등급: 설치 때 허용) — 읽기 -->
+    <uses-permission android:name="pleos.car.permission.CAR_SEATS" />
+    <uses-permission android:name="pleos.car.permission.CAR_CLIMATE" />
+    <uses-permission android:name="pleos.car.permission.CAR_WINDOWS" />
+    <uses-permission android:name="pleos.car.permission.CAR_DRIVE" />
+    <uses-permission android:name="pleos.car.permission.CAR_LIGHTS" />
+    <!-- (CAR_SPEED·CAR_MILEAGE·READ_CAR_STEERING 은 Vehicle SDK 2.3.2 에 없는 이름이라 뺌 — 조향·주행거리는 CAR_DRIVE, 차속은 AAOS CAR_SPEED) -->
+    <!-- 제어 -->
+    <uses-permission android:name="pleos.car.permission.CONTROL_CAR_CLIMATE" />
+    <uses-permission android:name="pleos.car.permission.CONTROL_CAR_WINDOWS" />
+    <uses-permission android:name="pleos.car.permission.CONTROL_CAR_LIGHTS" />
+
+    <!-- Pleos 음성 — 없으면 TTS·STT 초기화가 거부된다(에뮬레이터 확인 10-28) -->
+    <uses-permission android:name="pleos.car.permission.TTS_SERVICE" />
+    <uses-permission android:name="pleos.car.permission.STT_SERVICE" />
+    <!-- 내비 — 경로 요청·경유지 추가(NAVI_ROUTE_SEARCH 없으면 requestRoute 거부, 10-28 확인) -->
+    <uses-permission android:name="pleos.car.permission.NAVI_ROUTE" />
+    <uses-permission android:name="pleos.car.permission.NAVI_ROUTE_SEARCH" />
+    <!-- 내비 화면 열기(휴게소 장소 검색 → 경유지) — 없으면 requestNavigationScreen 거부(10-29 확인) -->
+    <uses-permission android:name="pleos.car.permission.NAVI_CUSTOM_MAP" />
+    <!-- 차속(AAOS 표준) — 위험 권한이라 실행 중 요청. 없으면 PERF_VEHICLE_SPEED 구독이 거부된다 -->
+    <uses-permission android:name="android.car.permission.CAR_SPEED" />
+
+    <!-- 내비가 앞에 있어도 차 신호를 계속 받기(포그라운드 서비스) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <!-- 「속이 안 좋아」·「응」 듣기 (물을 때만) -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.BackseatClear">
+
+        <!-- 주행 중에도 쓰는 화면(Distraction Optimized) — 주행 중에는 버튼을 숨기고 음성만 쓴다 -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density">
+            <meta-data android:name="distractionOptimized" android:value="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service
+            android:name=".TripService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Watches seat, brake and navigation signals during a trip to forecast and ease rear-seat motion sickness while the navigation app is in front." />
+        </service>
+    </application>
+</manifest>
